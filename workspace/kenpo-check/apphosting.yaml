@@ -1,0 +1,8 @@
+# Firebase App Hosting configuration.
+# Keep build/run commands inferred from the Next.js package scripts.
+runConfig:
+  minInstances: 0
+  maxInstances: 1
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
