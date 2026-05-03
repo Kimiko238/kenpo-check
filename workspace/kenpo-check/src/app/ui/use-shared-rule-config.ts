@@ -7,6 +7,7 @@ import {
   RULE_CONFIG_EVENT_NAME,
   type RuleConfig,
 } from "../lib/kenpo-rules";
+import { IS_STATIC_MODE } from "../lib/static-mode";
 
 async function fetchSharedRuleConfig() {
   const response = await fetch("/api/rule-config", {
@@ -28,6 +29,13 @@ export function useSharedRuleConfig() {
   const latestLoadIdRef = useRef(0);
 
   useEffect(() => {
+    if (IS_STATIC_MODE) {
+      setRuleConfig(DEFAULT_RULE_CONFIG);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     let active = true;
 
     async function load() {
@@ -72,6 +80,13 @@ export function useSharedRuleConfig() {
   }, []);
 
   async function saveRuleConfig(nextConfig: RuleConfig) {
+    if (IS_STATIC_MODE) {
+      latestLoadIdRef.current += 1;
+      setRuleConfig(nextConfig);
+      setError(null);
+      return nextConfig;
+    }
+
     const response = await fetch("/api/rule-config", {
       method: "PUT",
       headers: {
@@ -94,6 +109,13 @@ export function useSharedRuleConfig() {
   }
 
   async function resetRuleConfig() {
+    if (IS_STATIC_MODE) {
+      latestLoadIdRef.current += 1;
+      setRuleConfig(DEFAULT_RULE_CONFIG);
+      setError(null);
+      return DEFAULT_RULE_CONFIG;
+    }
+
     const response = await fetch("/api/rule-config", {
       method: "DELETE",
     });

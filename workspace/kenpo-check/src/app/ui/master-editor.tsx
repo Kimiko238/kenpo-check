@@ -8,6 +8,7 @@ import {
   type ParityRule,
   type RuleConfig,
 } from "../lib/kenpo-rules";
+import { IS_STATIC_MODE } from "../lib/static-mode";
 import { useSharedRuleConfig } from "./use-shared-rule-config";
 
 function cloneConfig(config: RuleConfig): RuleConfig {
@@ -758,6 +759,12 @@ export default function MasterEditor() {
   }
 
   async function handleSave() {
+    if (IS_STATIC_MODE) {
+      setMessage(null);
+      setSaveError("静的公開モードでは保存できません。設定を変更する場合はコード側の標準設定を編集して再デプロイしてください。");
+      return;
+    }
+
     try {
       const nextConfig = cloneConfig(config);
       nextConfig.fy2025.breast.sex = "female";
@@ -782,6 +789,12 @@ export default function MasterEditor() {
   }
 
   async function handleReset() {
+    if (IS_STATIC_MODE) {
+      setMessage(null);
+      setSaveError("静的公開モードでは標準設定への書き戻しはできません。");
+      return;
+    }
+
     try {
       await resetRuleConfig();
       setDraftConfig(null);
@@ -822,7 +835,8 @@ export default function MasterEditor() {
         <button
           type="button"
           onClick={() => void handleSave()}
-          className="rounded-full border border-white/80 bg-[linear-gradient(135deg,#9fddea_0%,#bbe9dd_48%,#f2ecad_100%)] px-5 py-3 text-base font-semibold text-green-700 shadow-[0_18px_42px_rgba(180,215,193,0.34)] transition hover:translate-y-[-1px] hover:brightness-[1.02] active:translate-y-[1px]"
+          disabled={IS_STATIC_MODE}
+          className="rounded-full border border-white/80 bg-[linear-gradient(135deg,#9fddea_0%,#bbe9dd_48%,#f2ecad_100%)] px-5 py-3 text-base font-semibold text-green-700 shadow-[0_18px_42px_rgba(180,215,193,0.34)] transition hover:translate-y-[-1px] hover:brightness-[1.02] active:translate-y-[1px] disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
         >
           保存
         </button>
@@ -862,13 +876,13 @@ export default function MasterEditor() {
           <div className="rounded-[1.4rem] bg-white/58 p-4">
             <p className="text-sm text-slate-500">保存先</p>
             <p className="mt-1 text-lg font-semibold text-slate-900">
-              サーバー共有マスタ
+              {IS_STATIC_MODE ? "固定マスタ" : "サーバー共有マスタ"}
             </p>
           </div>
           <div className="rounded-[1.4rem] bg-white/58 p-4">
             <p className="text-sm text-slate-500">反映範囲</p>
             <p className="mt-1 text-lg font-semibold text-slate-900">
-              全端末で共通
+              {IS_STATIC_MODE ? "再デプロイ時に反映" : "全端末で共通"}
             </p>
           </div>
         </div>
@@ -892,6 +906,11 @@ export default function MasterEditor() {
             className={`${noticeClassName} border-rose-100 bg-rose-50/90 text-rose-700`}
           >
             {saveError ?? sharedError}
+          </p>
+        )}
+        {IS_STATIC_MODE && (
+          <p className={`${noticeClassName} border-amber-100 bg-amber-50/90 text-amber-800`}>
+            静的公開モードです。画面上の編集は確認用で、保存はできません。
           </p>
         )}
 
@@ -1087,7 +1106,9 @@ export default function MasterEditor() {
             内部データを確認する
           </summary>
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            画面では規則性だけを編集しています。保存時には、この内容が内部の年度別データへ反映されます。
+            {IS_STATIC_MODE
+              ? "静的公開モードでは、この内容は固定マスタの確認用です。"
+              : "画面では規則性だけを編集しています。保存時には、この内容が内部の年度別データへ反映されます。"}
           </p>
           <pre className="mt-4 overflow-x-auto rounded-[1.7rem] border border-slate-200/80 bg-slate-900 p-4 text-xs leading-6 text-slate-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
             {jsonPreview}
@@ -1097,7 +1118,8 @@ export default function MasterEditor() {
           <button
             type="button"
             onClick={() => void handleReset()}
-            className="rounded-full border border-rose-100 bg-[linear-gradient(135deg,rgba(255,241,244,0.98),rgba(255,248,250,0.98))] px-5 py-3 text-sm font-semibold text-rose-700 shadow-[0_10px_28px_rgba(251,113,133,0.1)] transition hover:border-rose-200 hover:bg-[linear-gradient(135deg,rgba(255,236,241,0.98),rgba(255,245,248,0.98))]"
+            disabled={IS_STATIC_MODE}
+            className="rounded-full border border-rose-100 bg-[linear-gradient(135deg,rgba(255,241,244,0.98),rgba(255,248,250,0.98))] px-5 py-3 text-sm font-semibold text-rose-700 shadow-[0_10px_28px_rgba(251,113,133,0.1)] transition hover:border-rose-200 hover:bg-[linear-gradient(135deg,rgba(255,236,241,0.98),rgba(255,245,248,0.98))] disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
           >
             標準設定に戻す
           </button>

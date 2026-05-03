@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kenpo Check
 
-## Getting Started
+協会けんぽの健診対象年齢を確認する Next.js アプリです。
 
-First, run the development server:
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで `http://localhost:3000` を開きます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+通常の開発モードでは `/api/rule-config` を使い、マスタ画面から `data/kenpo-rule-config.json` へ設定を保存できます。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Build Modes
 
-## Learn More
+このプロジェクトには2種類のビルドがあります。
 
-To learn more about Next.js, take a look at the following resources:
+### 通常ビルド
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+API ありの通常 Next.js ビルドです。
 
-## Deploy on Vercel
+- `/api/rule-config` を使います
+- マスタ画面で保存できます
+- `data/kenpo-rule-config.json` があれば優先して読みます
+- なければ `DEFAULT_RULE_CONFIG` を使います
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Firebase Hosting 用の静的ビルド
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build:static
+```
+
+Firebase Hosting の無料枠で公開しやすい静的出力用ビルドです。
+
+- `out/` に静的ファイルを出力します
+- `/api/rule-config` は含まれません
+- マスタ保存・リセットは無効になります
+- 判定には `DEFAULT_RULE_CONFIG` を使います
+- マスタを変える場合はコード側の標準設定を変更して再ビルドします
+
+## Firebase Hosting Deploy
+
+静的公開する場合は、先に静的ビルドを実行します。
+
+```bash
+npm run build:static
+firebase deploy --only hosting
+```
+
+`firebase.json` の公開先は `out` です。
+
+```json
+{
+  "hosting": {
+    "public": "out"
+  }
+}
+```
+
+## Config Notes
+
+標準マスタは [src/app/lib/kenpo-rules.ts](src/app/lib/kenpo-rules.ts) の `DEFAULT_RULE_CONFIG` にあります。
+
+通常開発モードでマスタ画面から保存すると、設定は次のファイルに保存されます。
+
+```text
+data/kenpo-rule-config.json
+```
+
+静的公開モードでは、この保存ファイルは使わず、`DEFAULT_RULE_CONFIG` が使われます。
