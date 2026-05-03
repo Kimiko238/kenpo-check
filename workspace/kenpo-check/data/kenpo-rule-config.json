@@ -1,0 +1,153 @@
+{
+  "fy2025": {
+    "label": "令和7年度",
+    "assumptions": [
+      "この画面は協会けんぽの被保険者本人向けの健診を対象にしています。",
+      "同じ年度内に受けられる補助は1回です。"
+    ],
+    "general": {
+      "title": "生活習慣病予防健診",
+      "description": "血液検査、尿検査、胸部・胃部レントゲンなどを含む基本の健診です。",
+      "price": "自己負担額 5,282円",
+      "eligibleAge": {
+        "min": 35,
+        "max": 74
+      }
+    },
+    "added": {
+      "title": "付加健診",
+      "description": "腹部超音波や眼底検査などを一般健診に追加する詳細健診です。",
+      "price": "自己負担額 2,689円",
+      "ages": [
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70
+      ]
+    },
+    "breast": {
+      "title": "乳がん検診",
+      "description": "マンモグラフィを中心とした乳がん検診です。",
+      "eligibleAge": {
+        "min": 40,
+        "max": 74
+      },
+      "parity": "even",
+      "sex": "female"
+    },
+    "cervical": {
+      "title": "子宮頸がん検診",
+      "description": "子宮頸部の細胞診による検診です。",
+      "eligibleAge": {
+        "min": 36,
+        "max": 74
+      },
+      "parity": "even",
+      "sex": "female"
+    },
+    "cervicalStandalone": {
+      "title": "子宮頸がん検診（単独受診）",
+      "description": "一般健診を付けずに受けられる子宮頸がん検診です。",
+      "eligibleAge": {
+        "min": 20,
+        "max": 38
+      },
+      "parity": "even",
+      "sex": "female",
+      "ages": [
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38
+      ]
+    }
+  },
+  "fy2026plus": {
+    "label": "令和8年度以降の継続ルール",
+    "summary": "2025年度と2026年度の差分から、2026年度以降も続くと読めるパターンをローカル定義しています。",
+    "assumptions": [
+      "この画面は協会けんぽの被保険者本人向けの健診を対象にしています。",
+      "同じ年度内に受けられる補助は原則1回です。"
+    ],
+    "youth": {
+      "title": "若年健診",
+      "description": "胃検査、便潜血検査無しの一般検診です。",
+      "ages": [
+        20,
+        25,
+        30
+      ]
+    },
+    "general": {
+      "title": "生活習慣病予防健診",
+      "description": "35歳以上が対象です。",
+      "eligibleAge": {
+        "min": 35,
+        "max": 74
+      }
+    },
+    "milestone": {
+      "title": "節目健診",
+      "description": "節目年齢の追加オプションです。",
+      "ages": [
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70
+      ]
+    },
+    "breast": {
+      "title": "乳がん検診（マンモグラフィ）",
+      "description": "マンモグラフィ検査です。",
+      "eligibleAge": {
+        "min": 40,
+        "max": 74
+      },
+      "parity": "even",
+      "sex": "female"
+    },
+    "boneDensity": {
+      "title": "骨密度検査",
+      "description": "2026年度から追加されたオプションです。",
+      "eligibleAge": {
+        "min": 40,
+        "max": 74
+      },
+      "parity": "even",
+      "sex": "female"
+    },
+    "cervical": {
+      "title": "子宮頸がん検診",
+      "description": "別途、クリニックの予約が必要です。",
+      "eligibleAge": {
+        "min": 36,
+        "max": 74
+      },
+      "parity": "even",
+      "sex": "female"
+    },
+    "cervicalStandalone": {
+      "title": "子宮頸がん検診（単独）",
+      "description": "一般メニューを付けずに受ける単独の子宮頸がん検診です。別途、クリニックの予約が必要です。",
+      "eligibleAge": {
+        "min": 20,
+        "max": 38
+      },
+      "parity": "even",
+      "sex": "female"
+    },
+    "customMenus": []
+  }
+}
