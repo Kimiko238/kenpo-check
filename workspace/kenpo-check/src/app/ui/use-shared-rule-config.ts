@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DEFAULT_RULE_CONFIG,
   parseRuleConfigJson,
@@ -25,25 +25,29 @@ export function useSharedRuleConfig() {
   const [ruleConfig, setRuleConfig] = useState<RuleConfig>(DEFAULT_RULE_CONFIG);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const latestLoadIdRef = useRef(0);
 
   useEffect(() => {
     let active = true;
 
     async function load() {
+      const loadId = latestLoadIdRef.current + 1;
+      latestLoadIdRef.current = loadId;
+
       try {
         const nextConfig = await fetchSharedRuleConfig();
-        if (!active) {
+        if (!active || loadId !== latestLoadIdRef.current) {
           return;
         }
         setRuleConfig(nextConfig);
         setError(null);
       } catch (nextError) {
-        if (!active) {
+        if (!active || loadId !== latestLoadIdRef.current) {
           return;
         }
         setError(nextError instanceof Error ? nextError.message : "共有マスタの取得に失敗しました。");
       } finally {
-        if (active) {
+        if (active && loadId === latestLoadIdRef.current) {
           setLoading(false);
         }
       }
@@ -82,6 +86,7 @@ export function useSharedRuleConfig() {
 
     const json = (await response.json()) as unknown;
     const savedConfig = parseRuleConfigJson(JSON.stringify(json));
+    latestLoadIdRef.current += 1;
     setRuleConfig(savedConfig);
     setError(null);
     window.dispatchEvent(new Event(RULE_CONFIG_EVENT_NAME));
@@ -99,6 +104,7 @@ export function useSharedRuleConfig() {
 
     const json = (await response.json()) as unknown;
     const resetConfig = parseRuleConfigJson(JSON.stringify(json));
+    latestLoadIdRef.current += 1;
     setRuleConfig(resetConfig);
     setError(null);
     window.dispatchEvent(new Event(RULE_CONFIG_EVENT_NAME));

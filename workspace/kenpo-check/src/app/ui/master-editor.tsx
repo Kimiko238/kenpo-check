@@ -77,14 +77,32 @@ type NumberInputProps = {
 };
 
 function NumberInput({ label, value, onChange }: NumberInputProps) {
+  const [inputValue, setInputValue] = useState(String(value));
+
+  useEffect(() => {
+    setInputValue(String(value));
+  }, [value]);
+
   return (
     <label className="block">
       <span className="text-sm font-medium text-slate-600">{label}</span>
       <input
         type="number"
         className={fieldClassName}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
+        value={inputValue}
+        onChange={(event) => {
+          const nextValue = event.target.value;
+          setInputValue(nextValue);
+
+          if (nextValue === "") {
+            return;
+          }
+
+          const parsedValue = Number(nextValue);
+          if (Number.isFinite(parsedValue)) {
+            onChange(parsedValue);
+          }
+        }}
       />
     </label>
   );
